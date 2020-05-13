@@ -1,0 +1,137 @@
+import 'package:flutter/material.dart';
+
+void main() => runApp(MyApp());
+
+class MyApp extends StatefulWidget {
+  MyApp({Key key}) : super(key: key);
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  TextEditingController controller = TextEditingController();
+  TextEditingController scoreController = TextEditingController();
+  bool showDialog = false;
+  List myList = [];
+  List scores = [];
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+          appBar: AppBar(
+            title: Text('Bridge'),
+            actions: <Widget>[
+              IconButton(
+                  icon: Icon(Icons.add_circle_outline),
+                  onPressed: () {
+                    setState(() {
+                      showDialog = true;
+                    });
+                  }),
+            ],
+          ),
+          body: Column(children: [
+            Text('Hello flutter'),
+            showDialog == true
+                ? AlertDialog(
+                    elevation: 5,
+                    title: Text('Hello alert'),
+                    content: TextField(
+                      controller: controller,
+                      decoration: InputDecoration.collapsed(
+                          hintText: 'Please enter your name!'),
+                      onSubmitted: (String text) {},
+                    ),
+                    actions: <Widget>[
+                      FlatButton(
+                          onPressed: () {
+                            setState(() {
+                              showDialog = false;
+                              controller.text != ''
+                                  ? myList.add(controller.text)
+                                  : print('error, textfield is empty');
+                              controller.clear();
+                            });
+                          },
+                          child: Text('OK'))
+                    ],
+                  )
+                : Text(''),
+            Flexible(
+                child: ListView.builder(
+                    itemCount: myList.length,
+                    itemBuilder: (BuildContext context, int index,) {
+                      final item = myList[index];
+                      return Dismissible(
+                        background: Container(color: Colors.red),
+                        key: Key(item),
+                        
+                        onDismissed: (direction) {
+                         
+                          setState(() {
+                            myList.removeAt(index);
+                          });
+                        },
+                        child: Container(
+                          color: Colors.green,
+                          height: 50,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              Expanded(
+                                // flex: 3,
+                                child: Container(
+                                    color: Colors.red,
+                                    child: Text(
+                                      myList[index],
+                                      textAlign: TextAlign.center,
+                                    )),
+                              ),
+                              Expanded(
+                                child: Container(
+                                    color: Colors.grey,
+                                    child: TextField(
+                                      controller: scoreController,
+                                      decoration: InputDecoration.collapsed(
+                                        hintText: 'Score: $scores[item]'),
+                                        textAlign: TextAlign.center,
+                                        onSubmitted: (String rahunok){
+                                          setState(() {
+                                            print(myList);
+                                            scores.add(rahunok);
+                                            print(scores);
+                                            scoreController.clear();
+                                            
+                                            
+                                          });
+
+                                        },
+                                    ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Container(
+                                  color: Colors.yellow,
+                                  child: FlatButton(
+                                      onPressed: null,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Text('history log'),
+                                          Icon(Icons.arrow_drop_down_circle)
+                                        ],
+                                      )),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }))
+          ])),
+    );
+  }
+}
